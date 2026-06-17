@@ -3,23 +3,26 @@
 --  Created by: Ariq Muhammad
 -- ============================================================
 
-CREATE DATABASE IF NOT EXISTS momentum_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE momentum_db;
+CREATE DATABASE IF NOT EXISTS momentask_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE momentask_db;
 
 -- ============================================================
--- TABEL 1: users
+-- TABLE 1: users
 -- ============================================================
 CREATE TABLE IF NOT EXISTS users (
   id          INT AUTO_INCREMENT PRIMARY KEY,
   name        VARCHAR(100)  NOT NULL,
   email       VARCHAR(150)  NOT NULL UNIQUE,
   password    VARCHAR(255)  NOT NULL,
-  avatar      VARCHAR(10)   DEFAULT NULL COMMENT 'Inisial 2 huruf untuk avatar',
+  avatar      VARCHAR(10)   DEFAULT NULL COMMENT '2-letter initial for avatar',
+  last_active_date DATE     DEFAULT NULL,
+  current_streak   INT      DEFAULT 0,
+  focus_time_minutes INT    DEFAULT 0,
   created_at  TIMESTAMP     DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- TABEL 2: categories
+-- TABLE 2: categories
 -- ============================================================
 CREATE TABLE IF NOT EXISTS categories (
   id         INT AUTO_INCREMENT PRIMARY KEY,
@@ -31,7 +34,7 @@ CREATE TABLE IF NOT EXISTS categories (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- TABEL 3: tasks
+-- TABLE 3: tasks
 -- ============================================================
 CREATE TABLE IF NOT EXISTS tasks (
   id           INT AUTO_INCREMENT PRIMARY KEY,
@@ -51,7 +54,7 @@ CREATE TABLE IF NOT EXISTS tasks (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- TABEL 4: task_logs  (diisi otomatis oleh trigger)
+-- TABLE 4: task_logs (automatically populated by trigger)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS task_logs (
   id        INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,7 +68,7 @@ CREATE TABLE IF NOT EXISTS task_logs (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- TABEL 5: user_sessions
+-- TABLE 5: user_sessions
 -- ============================================================
 CREATE TABLE IF NOT EXISTS user_sessions (
   id          INT AUTO_INCREMENT PRIMARY KEY,
@@ -79,7 +82,7 @@ CREATE TABLE IF NOT EXISTS user_sessions (
 ) ENGINE=InnoDB;
 
 -- ============================================================
--- VIEW 1: Ringkasan task per user
+-- VIEW 1: Task summary per user
 -- ============================================================
 CREATE OR REPLACE VIEW v_user_task_summary AS
 SELECT
@@ -98,7 +101,7 @@ LEFT JOIN tasks t ON u.id = t.user_id
 GROUP BY u.id, u.name, u.email;
 
 -- ============================================================
--- VIEW 2: Tasks dengan detail kategori (untuk daftar task)
+-- VIEW 2: Tasks with category details (for task list)
 -- ============================================================
 CREATE OR REPLACE VIEW v_tasks_detail AS
 SELECT
@@ -126,7 +129,7 @@ FROM tasks t
 LEFT JOIN categories c ON t.category_id = c.id;
 
 -- ============================================================
--- FUNCTION 1: Hitung jumlah task selesai milik user tertentu
+-- FUNCTION 1: Count completed tasks for a specific user
 -- ============================================================
 DELIMITER //
 DROP FUNCTION IF EXISTS fn_completed_count //
@@ -144,7 +147,7 @@ END //
 DELIMITER ;
 
 -- ============================================================
--- FUNCTION 2: Cek apakah sebuah task sudah overdue (return 1/0)
+-- FUNCTION 2: Check if a task is overdue (return 1/0)
 -- ============================================================
 DELIMITER //
 DROP FUNCTION IF EXISTS fn_is_overdue //
@@ -164,7 +167,7 @@ END //
 DELIMITER ;
 
 -- ============================================================
--- TRIGGER 1: Catat log saat task baru dibuat
+-- TRIGGER 1: Log when a new task is created
 -- ============================================================
 DELIMITER //
 DROP TRIGGER IF EXISTS trg_task_after_insert //
@@ -173,12 +176,12 @@ AFTER INSERT ON tasks
 FOR EACH ROW
 BEGIN
   INSERT INTO task_logs (task_id, user_id, action, note)
-  VALUES (NEW.id, NEW.user_id, 'created', CONCAT('Task "', NEW.title, '" dibuat'));
+  VALUES (NEW.id, NEW.user_id, 'created', CONCAT('Task "', NEW.title, '" created'));
 END //
 DELIMITER ;
 
 -- ============================================================
--- TRIGGER 2: Catat log + set completed_at saat status berubah
+-- TRIGGER 2: Log when status changes
 -- ============================================================
 DELIMITER //
 DROP TRIGGER IF EXISTS trg_task_after_update //
@@ -186,41 +189,41 @@ CREATE TRIGGER trg_task_after_update
 AFTER UPDATE ON tasks
 FOR EACH ROW
 BEGIN
-  -- Jika status berubah menjadi completed
+  -- If status changes to completed
   IF NEW.status = 'completed' AND OLD.status = 'pending' THEN
     INSERT INTO task_logs (task_id, user_id, action, note)
-    VALUES (NEW.id, NEW.user_id, 'completed', CONCAT('Task "', NEW.title, '" ditandai selesai'));
+    VALUES (NEW.id, NEW.user_id, 'completed', CONCAT('Task "', NEW.title, '" marked as completed'));
   END IF;
-  -- Jika task di-edit (selain perubahan status)
+  -- If task is edited (excluding status change)
   IF OLD.title != NEW.title OR OLD.description != NEW.description
      OR OLD.priority != NEW.priority OR OLD.due_date != NEW.due_date THEN
     INSERT INTO task_logs (task_id, user_id, action, note)
-    VALUES (NEW.id, NEW.user_id, 'updated', CONCAT('Task "', NEW.title, '" diperbarui'));
+    VALUES (NEW.id, NEW.user_id, 'updated', CONCAT('Task "', NEW.title, '" updated'));
   END IF;
 END //
 DELIMITER ;
 
 -- ============================================================
--- DATA DUMMY
+-- DUMMY DATA
 -- ============================================================
 
--- User dummy (password: "password123")
+-- Dummy user (password: "password123")
 INSERT INTO users (name, email, password, avatar) VALUES
-('Ariq Muhammad', 'ariq@momentum.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'AM'),
-('Demo User',     'demo@momentum.id', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'DU');
+('Ariq Muhammad', 'ariq@momentum.id', '$2y$10$aazGw23EDRAN6Swn4CkpP.a.GWgMtPpd6UtpxMF.JdVgxEa12pF6u', 'AM'),
+('Demo User',     'demo@momentum.id', '$2y$10$aazGw23EDRAN6Swn4CkpP.a.GWgMtPpd6UtpxMF.JdVgxEa12pF6u', 'DU');
 
--- Kategori untuk user 1
+-- Categories for user 1
 INSERT INTO categories (user_id, name, color) VALUES
-(1, 'Kuliah',    '#8b5cf6'),
-(1, 'Pribadi',   '#3b82f6'),
-(1, 'Belanja',   '#10b981'),
-(1, 'Pekerjaan', '#f59e0b');
+(1, 'College',    '#8b5cf6'),
+(1, 'Personal',   '#3b82f6'),
+(1, 'Shopping',   '#10b981'),
+(1, 'Work',       '#f59e0b');
 
--- Tasks dummy untuk user 1
+-- Dummy tasks for user 1
 INSERT INTO tasks (user_id, category_id, title, description, priority, status, due_date) VALUES
-(1, 1, 'Selesaikan Laporan Web Programming', 'Buat laporan praktikum Web Programming dengan Bootstrap', 'high',   'completed', '2026-06-10'),
-(1, 1, 'Submit Tugas Statistika',            'Kumpulkan tugas distribusi probabilitas',                'high',   'completed', '2026-06-12'),
-(1, 1, 'Persiapkan Presentasi',              'Buat slide PPT untuk presentasi Basis Data',             'medium', 'pending',   '2026-06-20'),
-(1, 2, 'Beli Bahan Makanan',                 'Belanja mingguan di supermarket',                        'low',    'pending',   '2026-06-16'),
-(1, 1, 'Praktikum Struktur Data',            'Implementasi BFS dan DFS dengan Python',                 'high',   'pending',   '2026-06-18'),
-(1, 4, 'Meeting Tim Proyek',                 'Diskusi progress proyek akhir semester',                 'medium', 'pending',   '2026-06-15');
+(1, 1, 'Finish Web Programming Report', 'Create Web Programming practicum report with Bootstrap', 'high',   'completed', '2026-06-10'),
+(1, 1, 'Submit Statistics Assignment',            'Submit probability distribution assignment',                'high',   'completed', '2026-06-12'),
+(1, 1, 'Prepare Presentation',              'Create PPT slides for Database presentation',             'medium', 'pending',   '2026-06-20'),
+(1, 2, 'Buy Groceries',                 'Weekly grocery shopping at the supermarket',                        'low',    'pending',   '2026-06-16'),
+(1, 1, 'Data Structures Practicum',            'Implement BFS and DFS with Python',                 'high',   'pending',   '2026-06-18'),
+(1, 4, 'Project Team Meeting',                 'Discuss final semester project progress',                 'medium', 'pending',   '2026-06-15');
