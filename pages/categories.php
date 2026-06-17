@@ -69,7 +69,7 @@ $categories = $stmt->fetchAll();
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Color</label>
-                        <input type="color" name="color" class="form-control" value="#4F46E5" style="height: 40px; padding: 4px;">
+                        <input type="color" name="color" class="form-control" value="#0066FF" style="height: 40px; padding: 4px;">
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Create Category</button>
                 </form>
@@ -87,7 +87,7 @@ $categories = $stmt->fetchAll();
                     <?php endif; ?>
                     
                     <?php foreach($categories as $cat): ?>
-                        <div class="d-flex align-items-center justify-content-between p-3" style="border: 1px solid var(--border-color); border-radius: 12px;">
+                        <div class="d-flex align-items-center justify-content-between p-3" style="border: 1px solid var(--border-color); border-radius: 6px;">
                             <div class="d-flex align-items-center gap-3">
                                 <div style="width: 16px; height: 16px; border-radius: 4px; background: <?= htmlspecialchars($cat['color']) ?>;"></div>
                                 <span style="font-size: 14px; font-weight: 600;"><?= htmlspecialchars($cat['name']) ?></span>

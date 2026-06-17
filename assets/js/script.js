@@ -47,29 +47,6 @@ $(document).ready(function() {
         $('#mobile-overlay').toggleClass('show');
     });
 
-    // Dark Mode Toggle
-    $('#theme-toggle').click(function() {
-        $('body').toggleClass('dark-mode');
-        const isDark = $('body').hasClass('dark-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        
-        // Toggle icon
-        const icon = $(this).find('i');
-        if(isDark) {
-            icon.attr('data-lucide', 'sun');
-        } else {
-            icon.attr('data-lucide', 'moon');
-        }
-        lucide.createIcons();
-    });
-
-    // Check saved theme
-    if (localStorage.getItem('theme') === 'dark') {
-        $('body').addClass('dark-mode');
-        $('#theme-toggle i').attr('data-lucide', 'sun');
-        lucide.createIcons();
-    }
-    
     // Toggle Task Status via AJAX
     $(document).on('click', '.task-checkbox', function(e) {
         e.preventDefault();

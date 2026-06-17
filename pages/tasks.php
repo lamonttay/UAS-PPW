@@ -56,23 +56,23 @@ $paginated_tasks = array_slice($tasks, ($page - 1) * $limit, $limit);
                 <?= $date_filter ? ' · <span style="color: var(--primary); font-weight: 600;">Date: ' . date('M j, Y', strtotime($date_filter)) . '</span> <a href="tasks.php" style="color: var(--danger); margin-left: 4px;">Clear</a>' : '' ?>
             </p>
         </div>
-        <a href="add_task.php" class="btn btn-primary" style="padding: 10px 18px; border-radius: 14px; font-size: 14px; box-shadow: 0 4px 14px rgba(79,70,229,0.3);">
+        <a href="add_task.php" class="btn btn-primary" style="padding: 10px 18px; border-radius: 6px; font-size: 14px; box-shadow: 0 4px 14px rgba(0,102,255,0.3);">
             <i data-lucide="plus" width="16"></i> <span class="d-none d-sm-inline">Add Task</span>
         </a>
     </div>
 
     <!-- Controls -->
     <div class="d-flex flex-wrap gap-2 mb-4">
-        <form method="GET" action="" class="d-flex align-items-center gap-2" style="padding: 9px 14px; border-radius: 12px; background: white; border: 1px solid rgba(0,0,0,0.08); flex: 1; min-width: 180px; max-width: 280px;">
-            <i data-lucide="search" width="14" style="color: #9CA3AF;"></i>
-            <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search tasks..." style="background: transparent; border: none; outline: none; font-size: 13px; color: #374151; font-family: Inter; flex: 1; width: 100%;">
+        <form method="GET" action="" class="d-flex align-items-center gap-2" style="padding: 9px 14px; border-radius: 6px; background: var(--card-bg); border: 1px solid var(--border-color); flex: 1; min-width: 180px; max-width: 280px;">
+            <i data-lucide="search" width="14" style="color: var(--text-muted);"></i>
+            <input type="text" name="search" value="<?= htmlspecialchars($search) ?>" placeholder="Search tasks..." style="background: transparent; border: none; outline: none; font-size: 13px; color: var(--text-main); font-family: Inter; flex: 1; width: 100%;">
             <input type="hidden" name="filter" value="<?= htmlspecialchars($filter) ?>">
         </form>
-        <div style="display: flex; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.08); background: white;">
+        <div style="display: flex; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); background: var(--card-bg);">
             <?php foreach(['all', 'active', 'done'] as $f): 
                 $isActive = $filter === $f;
                 $bg = $isActive ? 'var(--primary-gradient)' : 'transparent';
-                $color = $isActive ? 'white' : '#6B7280';
+                $color = $isActive ? 'white' : 'var(--text-muted)';
             ?>
                 <a href="?filter=<?= $f ?><?= $search ? '&search='.urlencode($search) : '' ?>" style="padding: 9px 18px; border: none; font-size: 13px; font-weight: 600; text-transform: capitalize; background: <?= $bg ?>; color: <?= $color ?>; transition: all 0.2s;">
                     <?= $f ?>
@@ -97,13 +97,13 @@ $paginated_tasks = array_slice($tasks, ($page - 1) * $limit, $limit);
             $priorityLabel = ucfirst($task['priority']);
             if($task['priority'] === 'medium') $priorityLabel = 'Med';
         ?>
-        <div class="card d-flex flex-row align-items-center gap-3 task-item <?= $is_done ? 'done' : '' ?>" style="padding: 14px 18px; transition: all 0.15s; border-radius: 14px; background: white;">
+        <div class="card d-flex flex-row align-items-center gap-3 task-item <?= $is_done ? 'done' : '' ?>" style="padding: 14px 18px; transition: all 0.15s; border-radius: 6px; background: var(--card-bg); border: 1px solid var(--border-color);">
             <button class="task-checkbox <?= $is_done ? 'done' : '' ?>" data-id="<?= $task['id'] ?>" style="flex-shrink: 0;">
                 <?php if($is_done): ?><i data-lucide="check" style="width: 14px; height: 14px;"></i><?php endif; ?>
             </button>
 
             <div style="flex: 1; min-width: 0;">
-                <div class="task-text text-truncate" style="font-size: 14px; font-weight: 500; text-decoration: <?= $is_done ? 'line-through' : 'none' ?>; color: <?= $is_done ? '#94A3B8' : '#1E293B' ?>;">
+                <div class="task-text text-truncate" style="font-size: 14px; font-weight: 500; text-decoration: <?= $is_done ? 'line-through' : 'none' ?>; color: <?= $is_done ? 'var(--text-muted)' : 'var(--text-main)' ?>;">
                     <a href="edit_task.php?id=<?= $task['id'] ?>" style="color: inherit; text-decoration: inherit;"><?= htmlspecialchars($task['title']) ?></a>
                 </div>
                 <div class="d-flex flex-wrap align-items-center gap-2" style="margin-top: 4px;">
@@ -139,7 +139,7 @@ $paginated_tasks = array_slice($tasks, ($page - 1) * $limit, $limit);
         
         <div style="display: flex; gap: 4px;">
             <?php for($i = 1; $i <= $total_pages; $i++): ?>
-                <a href="<?= $base_url ?>&page=<?= $i ?>" style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; text-decoration: none; <?= $i === $page ? 'background: var(--primary-gradient); color: white;' : 'background: white; border: 1px solid var(--border-color); color: var(--text-muted);' ?>">
+                <a href="<?= $base_url ?>&page=<?= $i ?>" style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; text-decoration: none; <?= $i === $page ? 'background: var(--primary-gradient); color: white; border: 1px solid transparent;' : 'background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-muted);' ?>">
                     <?= $i ?>
                 </a>
             <?php endfor; ?>

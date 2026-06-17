@@ -40,8 +40,8 @@ $logs = $stmt->fetchAll();
                 
                 if ($log['action'] === 'created') {
                     $icon = 'plus';
-                    $color = '#4F46E5';
-                    $bg = 'rgba(79,70,229,0.1)';
+                    $color = '#0066FF';
+                    $bg = 'rgba(0,102,255,0.1)';
                 } elseif ($log['action'] === 'updated') {
                     $icon = 'edit-2';
                     $color = '#F59E0B';
@@ -56,7 +56,7 @@ $logs = $stmt->fetchAll();
                     $bg = 'rgba(239,68,68,0.1)';
                 }
             ?>
-            <div class="d-flex gap-3 p-3" style="border: 1px solid var(--border-color); border-radius: 12px; align-items: flex-start;">
+            <div class="d-flex gap-3 p-3" style="border: 1px solid var(--border-color); border-radius: 6px; align-items: flex-start;">
                 <div style="width: 32px; height: 32px; border-radius: 8px; background: <?= $bg ?>; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                     <i data-lucide="<?= $icon ?>" color="<?= $color ?>" width="16"></i>
                 </div>
