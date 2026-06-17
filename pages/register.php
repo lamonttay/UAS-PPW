@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Create default categories for user
                 $userId = $pdo->lastInsertId();
                 $stmtCat = $pdo->prepare("INSERT INTO categories (user_id, name, color) VALUES (?, ?, ?)");
-                $stmtCat->execute([$userId, 'Work', '#4F46E5']);
-                $stmtCat->execute([$userId, 'Personal', '#7C3AED']);
+                $stmtCat->execute([$userId, 'Work', '#0066FF']);
+                $stmtCat->execute([$userId, 'Personal', '#0066FF']);
                 $stmtCat->execute([$userId, 'Health', '#10B981']);
             } else {
                 $error = "Something went wrong. Please try again.";

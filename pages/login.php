@@ -35,8 +35,8 @@ require_once '../includes/header.php';
 ?>
 <div class="card" style="width: 100%; max-width: 400px; padding: 40px 32px;">
     <div class="text-center mb-4">
-        <div style="width: 48px; height: 48px; border-radius: 14px; background: var(--primary-gradient); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
-            <i data-lucide="zap" color="white" width="24"></i>
+        <div style="width: 72px; height: 72px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <img src="../assets/img/logo.png" alt="Momentask Logo" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         <h1 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">Welcome Back</h1>
         <p class="text-muted" style="font-size: 14px;">Log in to continue using Momentask.</p>
