@@ -1,0 +1,13 @@
+# Ignore database configuration containing credentials
+includes/config.php
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore Node.js / Composer dependencies if any
+node_modules/
+vendor/
+
+# Ignore user uploads
+uploads/
